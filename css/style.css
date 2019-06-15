@@ -44,7 +44,7 @@ h1 {
     width: 50%;
 }
 .banner {
-    background: url(../images/banner.jpg)no-repeat 0px 0px;
+    background: url(banner.jpg)no-repeat 0px 0px;
     background-size: cover;
 }
 
@@ -59,7 +59,7 @@ h1 {
     width: 48%;
 }
 .signin-form {
-    background: url(../images/banner1.jpg)no-repeat 0px 0px;
+    background: url(banner1.jpg)no-repeat 0px 0px;
     background-size: cover;
     padding: 2em 2em;
 	text-align: center;
