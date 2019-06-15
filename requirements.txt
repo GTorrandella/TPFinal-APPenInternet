@@ -1,5 +1,6 @@
 express
 express-session
+express-validator
 socket.io
 bcrypt
 ioredis

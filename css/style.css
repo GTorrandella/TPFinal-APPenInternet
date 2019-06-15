@@ -157,7 +157,6 @@ h5 {
   -moz-transition: 0.5s all;
   -o-transition: 0.5s all;
   display: inline-block;
-  float:left;
   border-radius: 14px 0px 0px 14px;
 }
 .header-social a.face:hover{
@@ -183,7 +182,6 @@ h5 {
   display: inline-block;
   cursor: pointer;
   outline: none;
-  float:left;
   border-radius: 0px 14px 14px 0px;
 }
 .header-social a.goog:hover {

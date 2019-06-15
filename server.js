@@ -3,7 +3,10 @@ const fs = require('fs')
 
 // Requiero Express, luego creo el servidor http a partir de Express
 const express = require('express')
-var aplicacion  = express()	
+var aplicacion  = express()
+aplicacion.use(express.urlencoded({extended : true}))
+aplicacion.use(express.static(__dirname + '/css'))
+aplicacion.use(express.static(__dirname + '/images'))
 var server = http.createServer(aplicacion)
 
 // Bindeo el servidor http con Socket.IO
@@ -19,9 +22,8 @@ var connectionParameters = {
 var redisDB = new redis(connectionParameters)
 
 
-// Devuelve por defecto la página de login común
+// Devuelve por defecto la página de login
 aplicacion.get('/', function(req, res){
-    var fs = require("fs");
 	var text = fs.readFileSync("index.html").toString();
 	res.send(text);
 })
