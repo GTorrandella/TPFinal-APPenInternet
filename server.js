@@ -1,11 +1,14 @@
 const http = require('http')
 const fs = require('fs')
+const validation = require('./validation.js')
+const validationResult = require('express-validator/check/validation-result');
 
 // Requiero Express, luego creo el servidor http a partir de Express
 const express = require('express')
 var aplicacion  = express()
 aplicacion.use(express.urlencoded({extended : true}))
 aplicacion.use(express.static(__dirname + '/css'))
+aplicacion.use(express.static(__dirname + '/html'))
 aplicacion.use(express.static(__dirname + '/images'))
 var server = http.createServer(aplicacion)
 
@@ -28,7 +31,13 @@ aplicacion.get('/', function(req, res){
 	res.send(text);
 })
 
-aplicacion.post('/', function(req, res){
+
+aplicacion.post('/', validation.old_user, (req, res) => {
+    // Finds the validation errors in this request and wraps them in an object with handy functions
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
     console.log(req.body)
     res.send("Llegó el POST")
 })
