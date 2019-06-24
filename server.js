@@ -1,15 +1,24 @@
 const http = require('http')
 const fs = require('fs')
-const validation = require('./validation.js')
 const {check, validationResult} = require('express-validator/check');
 
-// Requiero Express, luego creo el servidor http a partir de Express
+// Requiero el encriptado, y declaro las rondas que usará al hashear
+const bcrypt = require('bcrypt')
+saltRounds = 10
+
+// Requiero Express
 const express = require('express')
 var aplicacion  = express()
+
+// Incluyo la extención de cookies
+const cookieParser = require('cookie-parser')
+
+//  Creo el servidor http a partir de Express
 aplicacion.use(express.urlencoded({extended : true}))
 aplicacion.use(express.static(__dirname + '/css'))
 aplicacion.use(express.static(__dirname + '/html'))
 aplicacion.use(express.static(__dirname + '/images'))
+aplicacion.use(cookieParser())
 var server = http.createServer(aplicacion)
 
 // Bindeo el servidor http con Socket.IO
@@ -24,13 +33,27 @@ var connectionParameters = {
 }
 var redisDB = new redis(connectionParameters)
 
-function register_user(user_data){
-  if (user_data.confirmation_password != user_data.password){
-    return res.status(422)
-  }
-  else{
+function add_user(user_data){
+  redisDB.sadd("user", user_data.email, user_data.name)
+  bcrypt.hash(user_data.password, saltRounds, function(err, hash) {
+    redisDB.set(user_data.email, hash)
+  })  
+}
 
+function check_registration_data(user_data){
+  if (user_data.confirmation_password != user_data.password){
+    return false
   }
+  return true
+}
+
+function check_returning_user(user_data){
+  bcrypt.compare(user_data.password, redisDB.get(user_data.email), function(err, res) {
+    if (res){
+      return true
+    }
+    return false
+  })
 }
 
 // Devuelve por defecto la página de login
@@ -56,9 +79,18 @@ aplicacion.post('/', [
     
     if (req.body.confirmation_password){
       console.log("NUEVO USUARIO")
+      if (check_registration_data(req.body)){
+        add_user(req.body)
+        return res.status(200)
+      }
+      return res.status(422)
     }
     else{
       console.log("VIEJO USUARIO")
+      if (check_returning_user(req.body)){
+        return res.status(200)
+      }
+      return res.status(422)
     }
 
     res.send("Llegó el POST")
