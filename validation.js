@@ -12,6 +12,7 @@ validation.old_user =  [
             if (value !== req.body.password) {
               throw new Error('Password confirmation does not match password');
             }
-    ]
+        })
+]
 
 module.exports = validation

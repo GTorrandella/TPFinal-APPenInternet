@@ -1,7 +1,7 @@
 const http = require('http')
 const fs = require('fs')
 const validation = require('./validation.js')
-const validationResult = require('express-validator/check/validation-result');
+const {check, validationResult} = require('express-validator/check');
 
 // Requiero Express, luego creo el servidor http a partir de Express
 const express = require('express')
@@ -24,6 +24,14 @@ var connectionParameters = {
 }
 var redisDB = new redis(connectionParameters)
 
+function register_user(user_data){
+  if (user_data.confirmation_password != user_data.password){
+    return res.status(422)
+  }
+  else{
+
+  }
+}
 
 // Devuelve por defecto la página de login
 aplicacion.get('/', function(req, res){
@@ -31,14 +39,28 @@ aplicacion.get('/', function(req, res){
 	res.send(text);
 })
 
-
-aplicacion.post('/', validation.old_user, (req, res) => {
+aplicacion.post('/', [
+  // username must be an email
+  check('email')
+      .isEmail(),
+  // password must be at least 5 chars long
+  check('password')
+      .isLength({ min: 5 })
+], (req, res) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
     console.log(req.body)
+    
+    if (req.body.confirmation_password){
+      console.log("NUEVO USUARIO")
+    }
+    else{
+      console.log("VIEJO USUARIO")
+    }
+
     res.send("Llegó el POST")
 })
 
