@@ -2,6 +2,7 @@ express
 express-session
 express-validator
 cookie-parser
+uuid-random
 socket.io
 bcrypt
 ioredis

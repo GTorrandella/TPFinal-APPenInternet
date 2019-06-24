@@ -1,6 +1,7 @@
 const http = require('http')
 const fs = require('fs')
 const {check, validationResult} = require('express-validator/check');
+const uuid = require('uuid-random');
 
 // Requiero el encriptado, y declaro las rondas que usará al hashear
 const bcrypt = require('bcrypt')
@@ -56,6 +57,16 @@ function check_returning_user(user_data){
   })
 }
 
+function get_session(session_id){
+  return redisDB.get(session_id)
+}
+
+function create_session(user_name){
+  session_id = uuid()
+  redisDB.set(session_id, user_name)
+  return session_id
+}
+
 // Devuelve por defecto la página de login
 aplicacion.get('/', function(req, res){
 	var text = fs.readFileSync("index.html").toString();
@@ -73,7 +84,7 @@ aplicacion.post('/', [
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+      res.status(422).json({ errors: errors.array() });
     }
     console.log(req.body)
     
@@ -81,19 +92,20 @@ aplicacion.post('/', [
       console.log("NUEVO USUARIO")
       if (check_registration_data(req.body)){
         add_user(req.body)
-        return res.status(200)
+        res.status(200)
+        res.cookie('tpfinal-session', create_session())
       }
-      return res.status(422)
+      else res.status(422)
     }
     else{
       console.log("VIEJO USUARIO")
       if (check_returning_user(req.body)){
-        return res.status(200)
+        res.status(200)
       }
-      return res.status(422)
+      else res.status(422)
     }
 
-    res.send("Llegó el POST")
+    res.send("LOGEADO")
 })
 
 // Pone a escuchar al servidor y avisa por consola cuando esta listo
