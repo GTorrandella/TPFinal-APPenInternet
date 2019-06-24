@@ -101,11 +101,12 @@ aplicacion.post('/', [
       console.log("VIEJO USUARIO")
       if (check_returning_user(req.body)){
         res.status(200)
+        res.cookie(get_session(res.cookieParser))
       }
       else res.status(422)
     }
 
-    res.send("LOGEADO")
+    res.send()
 })
 
 // Pone a escuchar al servidor y avisa por consola cuando esta listo
