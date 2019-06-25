@@ -69,7 +69,8 @@ function create_session(user_name){
 
 // Devuelve por defecto la página de login
 aplicacion.get('/', function(req, res){
-	var text = fs.readFileSync("index.html").toString();
+  var text = fs.readFileSync("index.html").toString();
+  console.log(text)
 	res.send(text);
 })
 

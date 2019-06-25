@@ -36,7 +36,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				<div class="login-form">
 					<form method="post">
 						<input type="text" name="email" placeholder="E-mail" required="">
-						<div id="wrong-log-in-email" class="error">Ingresé un E-mail de un usuario registrado</div>
 						<input type="password" name="password" placeholder="Password" required="">
 						<div id="wrong-log-in-password" class="error">Contraseña o E-mail incorrectos</div>
 						<div class="tp">
@@ -54,11 +53,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				<div class="login-form">
 					<form method="post">
 						<input type="text" name="email" placeholder="E-mail" required="">
-						<div id="wrong-registration-email" class="error">Ingresé un E-mail</div>
 						<input type="text" name="name" placeholder="Username" required="">
-						<div id="wrong-resgistration-user" class="error">Usuario ya regsitrado</div>
 						<input type="password" name="password" placeholder="Password" required="">
-						<div id="wrong-resgistration-password" class="error">Las contraseñas son iguales</div>
 						<input type="password" name="confirmation_password" placeholder="Confirm Password" required="">
 						<input type="submit" value="REGISTER">
 					</form>
@@ -71,6 +67,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	</div>
 	<div class="copyright">
 		<p> &copy; 2016 Register Login Widget . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank" >W3layouts</a></p>
-	</div>			
+	</div>	
+	<script>
+		jQuery(function(){
+			$("div.error").hide()
+		})
+	</script>				
 </body>
 </html>
