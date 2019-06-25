@@ -82,24 +82,22 @@ aplicacion.post('/', [
   check('password')
       .isLength({ min: 5 })
 ], (req, res) => {
-    console.log(req.cookies)
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      res.status(422).json({ errors: errors.array() });
+      if ('email' in errors.mapped()) {res.send(fs.readFileSync("html/index-regis-email.html").toString())}
+      else if ('password' in errors.mapped()) {res.send(fs.readFileSync("html/index-regis-pass-short.html").toString())}
     }
     
-    if (req.body.confirmation_password){
-      console.log("NUEVO USUARIO")
+    else if (req.body.confirmation_password){
       if (check_registration_data(req.body)){
         add_user(req.body)
         res.status(200)
         res.cookie('TPFinal-Session', create_session(), {maxAge: 300})
       }
-      else res.status(422)
+      else res.send(fs.readFileSync("html/index-regis-pass.html").toString())
     }
     else{
-      console.log("VIEJO USUARIO")
       if (check_returning_user(req.body)){
         res.status(200)
         res.cookie('TPFinal-Session', get_session(res.cookies), {maxAge: 300})
