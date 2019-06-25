@@ -57,16 +57,6 @@ function check_returning_user(user_data){
   })
 }
 
-function get_session(session_id){
-  return redisDB.get(session_id)
-}
-
-function create_session(user_name){
-  session_id = uuid()
-  redisDB.set(session_id, user_name)
-  return session_id
-}
-
 // Devuelve por defecto la página de login
 aplicacion.get('/', function(req, res){
   console.log(req.cookies)
@@ -93,14 +83,12 @@ aplicacion.post('/', [
       if (check_registration_data(req.body)){
         add_user(req.body)
         res.status(200)
-        res.cookie('TPFinal-Session', create_session(), {maxAge: 300})
       }
       else res.send(fs.readFileSync("html/index-regis-pass.html").toString())
     }
     else{
       if (check_returning_user(req.body)){
         res.status(200)
-        res.cookie('TPFinal-Session', get_session(res.cookies), {maxAge: 300})
       }
       else {
         res.send(fs.readFileSync("html/index-login-email.html").toString())
