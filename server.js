@@ -11,15 +11,11 @@ saltRounds = 10
 const express = require('express')
 var aplicacion  = express()
 
-// Incluyo la extención de cookies
-const cookieParser = require('cookie-parser')
-
 //  Creo el servidor http a partir de Express
 aplicacion.use(express.urlencoded({extended : true}))
 aplicacion.use(express.static(__dirname + '/css'))
 aplicacion.use(express.static(__dirname + '/html'))
 aplicacion.use(express.static(__dirname + '/images'))
-aplicacion.use(cookieParser())
 var server = http.createServer(aplicacion)
 
 // Bindeo el servidor http con Socket.IO
@@ -33,6 +29,17 @@ var connectionParameters = {
     host : 'localhost'
 }
 var redisDB = new redis(connectionParameters)
+
+// Genero el manejador de sesiones de express
+var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
+ 
+app.use(session({
+    store: new RedisStore(client=redisDB),
+    secret: 'keyboard cat',
+    resave: false
+}));
+
 
 function add_user(user_data){
   redisDB.set("user:"+user_data.email, user_data.name)
