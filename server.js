@@ -34,10 +34,13 @@ var redisDB = new redis(connectionParameters)
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
  
-app.use(session({
-    store: new RedisStore(client=redisDB),
+aplicacion.use(session({
+    store: new RedisStore({client:redisDB}),
     secret: 'keyboard cat',
-    resave: false
+    resave: false,
+    genid: function(){
+      return uuid()
+    }
 }));
 
 
