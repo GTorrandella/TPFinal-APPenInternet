@@ -3,10 +3,6 @@ const fs = require('fs')
 const {check, validationResult} = require('express-validator');
 const uuid = require('uuid-random');
 
-// Requiero el encriptado, y declaro las rondas que usará al hashear
-const bcrypt = require('bcrypt')
-saltRounds = 10
-
 // Requiero Express
 const express = require('express')
 var aplicacion  = express()
@@ -45,6 +41,7 @@ aplicacion.use(session({
 }));
 
 aplicacion.use(function(req, res, next) {
+  console.log("Nueva session")
   if (!req.session.user) {
     req.session.user = {}
   }
@@ -61,7 +58,16 @@ function check_registration_data(user_data){
   if (user_data.confirmation_password != user_data.password){
     return false
   }
-  return true
+}
+
+async function check_existing_user(user_data){
+  try{
+    if (await redisDB.get("user:"+user_data.email)) {return false}
+    return true
+  }
+  catch{
+    return false
+  }
 }
 
 async function check_returning_user(user_data){
@@ -75,8 +81,8 @@ async function check_returning_user(user_data){
 }
 
 // Devuelve por defecto la página de login
-aplicacion.get('/', function(req, res){
-  console.log(req.cookies)
+aplicacion.get('/', function(req, res, next){
+  console.log(req.session)
   var text = fs.readFileSync("index.html").toString();
 	res.send(text);
 })
@@ -88,7 +94,7 @@ aplicacion.post('/', [
   // password must be at least 5 chars long
   check('password')
       .isLength({ min: 5 })
-], async (req, res) => {
+], async (req, res, next) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
     if (!errors.isEmpty()) {  
@@ -98,14 +104,15 @@ aplicacion.post('/', [
     
     else if (req.body.confirmation_password){
       if (check_registration_data(req.body)){
-        add_user(req.body)
-        res.send("LOGED")
+        if (await check_existing_user(req.body)){res.send(fs.readFileSync("html/index-regis-user.html").toString())}
+        else{
+          add_user(req.body)
+          res.send("LOGED")
+        }
       }
-      else res.send(fs.readFileSync("html/index-regis-pass.html").toString())
+      else {res.send(fs.readFileSync("html/index-regis-pass.html").toString())}
     }
     else{
-      console.log("Returning User")
-      console.log(await check_returning_user(req.body))
       if (await check_returning_user(req.body)){
         res.send("LOGED")
       }
@@ -117,6 +124,11 @@ aplicacion.post('/', [
     res.send()
 })
 
+aplicacion.get('/logout', (req, res, next) => {
+  req.session.destroy()
+  res.send(fs.readFileSync("html/index").toString())
+})
+
 // Pone a escuchar al servidor y avisa por consola cuando esta listo
 port = 8080
 hostname = "localhost"
@@ -124,11 +136,12 @@ server.listen(port, hostname, () => {
     console.log(`Stream server running at http://${hostname}:${port}/`);
 });
 
+
 //Cuando el server escuche una conexiòn serà un socket cliente:
 io.on('connection',function(socket){
 		//Luego cuando haya una peticiòn de stream en ese socket... nos mandarà una imagen:
 		//Vamos a trabajar el stream como imagen. Vamos a enviar una cantidad definida de imàgenes por segundo.
 		socket.on('stream',function(image){
-			socket.broadcast.emit('stream',image);//Y luego va a transmitirlo a los demàs sockets conectados y emitirà una imagen (image)
-		});
-});
+      socket.broadcast.emit('stream',image)//Y luego va a transmitirlo a los demàs sockets conectados y emitirà una imagen (image)
+    })
+})
