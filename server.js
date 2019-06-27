@@ -40,10 +40,13 @@ aplicacion.use(session({
     saveUninitialized: true
 }));
 
-aplicacion.use(function(req, res, next) {
+aplicacion.use(async function(req, res, next) {
   console.log("Nueva session")
   if (!req.session.user) {
     req.session.user = {}
+  }
+  if (await check_privilige(req.body)){
+    req.session.privilege = true
   }
   next()
 })
@@ -58,18 +61,21 @@ function add_user(user_data){
 }
 
 async function check_privilige(user_data){
-  return await redisDB.sismember("privileges", user_data.email)
-}
-
-function check_registration_data(user_data){
-  if (user_data.confirmation_password != user_data.password){
+  try {
+    return await redisDB.sismember("privileges", user_data.email)
+  }
+  catch {
     return false
   }
 }
 
+function check_registration_data(user_data){
+  return user_data.confirmation_password == user_data.password
+}
+
 async function check_existing_user(user_data){
   try{
-    if (await redisDB.get("user:"+user_data.email)) {return false}
+    if (await redisDB.get("user:"+user_data.email) == null) {return false}
     return true
   }
   catch{
