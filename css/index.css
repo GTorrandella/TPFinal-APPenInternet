@@ -91,6 +91,18 @@ h1 {
 	letter-spacing: 1px;
 	text-align:center;
 }
+.signin-form input[type="checkbox"] {
+    width: 92%;
+    padding: 1em 1em 1em 1em;
+    font-size: 0.8em;
+    margin: 1em 0;
+    outline: none;
+    color: #FFF;
+    border: none;
+    border-bottom: 2px solid #fff;
+	letter-spacing: 1px;
+	text-align:left;
+}
 .signin-form input[type="text"] {
     background: none;
     display: block;
