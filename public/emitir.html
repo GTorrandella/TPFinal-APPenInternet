@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+
+	<head>
+		<script type='text/javascript', src='/jquery-3.4.1.min.js'> </script>
+		<script type='text/javascript', src='/socket.io/socket.io.js'> </script>
+		<script type='text/javascript', src='/javascripts/emitir.js'></script>
+		<meta charset="utf-8">
+		<title>Emitir video</title>
+	</head>
+
+	<body>
+		<!--Todo lo que esta abajo en video lo va a pasar màs abajo al canvas. Y apartir del canvas vamos a configurar una imagen que es la que vamos a pasarlas al servidor-->
+		<video src="" id="video" style="width:700px; height: 350px;" autoplay="true"></video> <!--Autoplay es para que se inicie el video de inmediato-->
+		
+		<canvas style="display:none" id="preview"></canvas>
+		<!--SI sacamos el display:none entonces vemos el canvas-->
+		
+		<!--Ademàs vamos a tener un logger para ver si nuestra càmara està activa o inactiva:-->
+		<div id="logger"></div>
+	</body>
+
+</html>

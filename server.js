@@ -16,6 +16,7 @@ aplicacion.use(express.urlencoded({extended : true}))
 aplicacion.use(express.static(__dirname + '/css'))
 aplicacion.use(express.static(__dirname + '/html'))
 aplicacion.use(express.static(__dirname + '/images'))
+aplicacion.use(express.static(__dirname + '/public'))
 var server = http.createServer(aplicacion)
 
 // Bindeo el servidor http con Socket.IO
@@ -113,4 +114,13 @@ port = 8080
 hostname = "localhost"
 server.listen(port, hostname, () => {
     console.log(`Stream server running at http://${hostname}:${port}/`);
+});
+
+//Cuando el server escuche una conexiòn serà un socket cliente:
+io.on('connection',function(socket){
+		//Luego cuando haya una peticiòn de stream en ese socket... nos mandarà una imagen:
+		//Vamos a trabajar el stream como imagen. Vamos a enviar una cantidad definida de imàgenes por segundo.
+		socket.on('stream',function(image){
+			socket.broadcast.emit('stream',image);//Y luego va a transmitirlo a los demàs sockets conectados y emitirà una imagen (image)
+		});
 });
