@@ -1,6 +1,6 @@
 const http = require('http')
 const fs = require('fs')
-const {check, validationResult} = require('express-validator/check');
+const {check, validationResult} = require('express-validator');
 const uuid = require('uuid-random');
 
 // Requiero el encriptado, y declaro las rondas que usará al hashear
@@ -54,9 +54,7 @@ aplicacion.use(function(req, res, next) {
 
 function add_user(user_data){
   redisDB.set("user:"+user_data.email, user_data.name)
-  bcrypt.hash(user_data.password, saltRounds, function(err, hash) {
-    redisDB.set("pass:"+user_data.email, hash)
-  })  
+  redisDB.set("pass:"+user_data.email, user_data.password)
 }
 
 function check_registration_data(user_data){
@@ -66,13 +64,14 @@ function check_registration_data(user_data){
   return true
 }
 
-function check_returning_user(user_data){
-  bcrypt.compare(user_data.password, redisDB.get("pass:"+user_data.email), function(err, res) {
-    if (res){
-      return true
-    }
+async function check_returning_user(user_data){
+  try {
+    password = await redisDB.get("pass:"+user_data.email)
+    return password == user_data.password
+  }
+  catch {
     return false
-  })
+  }
 }
 
 // Devuelve por defecto la página de login
@@ -89,10 +88,10 @@ aplicacion.post('/', [
   // password must be at least 5 chars long
   check('password')
       .isLength({ min: 5 })
-], (req, res) => {
+], async (req, res) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
-    if (!errors.isEmpty()) {
+    if (!errors.isEmpty()) {  
       if ('email' in errors.mapped()) {res.send(fs.readFileSync("html/index-regis-email.html").toString())}
       else if ('password' in errors.mapped()) {res.send(fs.readFileSync("html/index-regis-pass-short.html").toString())}
     }
@@ -100,13 +99,15 @@ aplicacion.post('/', [
     else if (req.body.confirmation_password){
       if (check_registration_data(req.body)){
         add_user(req.body)
-        res.status(200)
+        res.send("LOGED")
       }
       else res.send(fs.readFileSync("html/index-regis-pass.html").toString())
     }
     else{
-      if (check_returning_user(req.body)){
-        res.status(200)
+      console.log("Returning User")
+      console.log(await check_returning_user(req.body))
+      if (await check_returning_user(req.body)){
+        res.send("LOGED")
       }
       else {
         res.send(fs.readFileSync("html/index-login-email.html").toString())
