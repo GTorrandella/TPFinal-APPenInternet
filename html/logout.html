@@ -19,10 +19,11 @@
     <h1>Loged</h1>
     <button type="button" id="logout">LOGOUT</button>
     <script>
-        $("id=logout").click(function (){
+        $("#logout").click(function (){
             var xml = new XMLHttpRequest();
-            xml.open("get", "http://localhost:8080/logout", false)
+            xml.open("get", "http://localhost:8080/logout", true)
             xml.send()
+            window.location.replace("index.html")
         })
     </script>
 </body>

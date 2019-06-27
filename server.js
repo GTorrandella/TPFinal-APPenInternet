@@ -121,9 +121,9 @@ aplicacion.post('/', [
         else{
           add_user(req.body)
           if (check_privilige(req.body)){
-            res.send("LOGED WITH PRIVILIGES")
+            res.send(res.send(fs.readFileSync("html/logout-privileged.html").toString()))
           }
-          res.send("LOGED")
+          res.send(res.send(fs.readFileSync("html/logout.html").toString()))
         }
       }
       else {res.send(fs.readFileSync("html/index-regis-pass.html").toString())}
@@ -131,9 +131,9 @@ aplicacion.post('/', [
     else{
       if (await check_returning_user(req.body)){
         if (check_privilige(req.body)){
-          res.send("LOGED WITH PRIVILIGES")
+          res.send(res.send(fs.readFileSync("html/logout-privileged.html").toString()))
         }
-        res.send("LOGED")
+        res.send(res.send(fs.readFileSync("html/logout.html").toString()))
       }
       else {
         res.send(fs.readFileSync("html/index-login-email.html").toString())
@@ -145,7 +145,7 @@ aplicacion.post('/', [
 
 aplicacion.get('/logout', (req, res, next) => {
   req.session.destroy()
-  res.send(fs.readFileSync("html/index").toString())
+  res.send(status=200)
 })
 
 // Pone a escuchar al servidor y avisa por consola cuando esta listo
