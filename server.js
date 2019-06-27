@@ -36,13 +36,20 @@ var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
  
 aplicacion.use(session({
-    store: new RedisStore({client:redisDB}),
-    secret: 'keyboard cat',
+    secret: 'tp-final',
     resave: false,
     genid: function(){
       return uuid()
-    }
+    },
+    saveUninitialized: true
 }));
+
+aplicacion.use(function(req, res, next) {
+  if (!req.session.user) {
+    req.session.user = {}
+  }
+  next()
+})
 
 
 function add_user(user_data){
