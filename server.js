@@ -52,6 +52,13 @@ aplicacion.use(function(req, res, next) {
 function add_user(user_data){
   redisDB.set("user:"+user_data.email, user_data.name)
   redisDB.set("pass:"+user_data.email, user_data.password)
+  if(user_data.streaming_privileges){
+    redisDB.sadd("privileges", user_data.email)
+  }
+}
+
+async function check_privilige(user_data){
+  return await redisDB.sismember("privileges", user_data.email)
 }
 
 function check_registration_data(user_data){
@@ -107,6 +114,9 @@ aplicacion.post('/', [
         if (await check_existing_user(req.body)){res.send(fs.readFileSync("html/index-regis-user.html").toString())}
         else{
           add_user(req.body)
+          if (check_privilige(req.body)){
+            res.send("LOGED WITH PRIVILIGES")
+          }
           res.send("LOGED")
         }
       }
@@ -114,6 +124,9 @@ aplicacion.post('/', [
     }
     else{
       if (await check_returning_user(req.body)){
+        if (check_privilige(req.body)){
+          res.send("LOGED WITH PRIVILIGES")
+        }
         res.send("LOGED")
       }
       else {
