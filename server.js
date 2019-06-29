@@ -111,32 +111,31 @@ aplicacion.post('/', [
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
     if (!errors.isEmpty()) {  
-      if ('email' in errors.mapped()) {res.send(fs.readFileSync("html/index-regis-email.html").toString())}
-      else if ('password' in errors.mapped()) {res.send(fs.readFileSync("html/index-regis-pass-short.html").toString())}
+      if ('email' in errors.mapped()) {res.redirect("index-regis-email.html")}
+      else if ('password' in errors.mapped()) {res.redirect("index-regis-pass-short.html")}
     }
     
     else if (req.body.confirmation_password){
       if (check_registration_data(req.body)){
-        if (await check_existing_user(req.body)){res.send(fs.readFileSync("html/index-regis-user.html").toString())}
+        if (await check_existing_user(req.body)){res.redirect("index-regis-user.html")}
         else{
           add_user(req.body)
           if (check_privilige(req.body)){
-            res.send(res.send(fs.readFileSync("html/logout-privileged.html").toString()))
+            res.redirect("/logout-privileged.html")}
           }
-          res.send(res.send(fs.readFileSync("html/logout.html").toString()))
-        }
+          res.redirect("logout.html")
       }
-      else {res.send(fs.readFileSync("html/index-regis-pass.html").toString())}
+      else {res.redirect("index-regis-pass.html")}
     }
     else{
       if (await check_returning_user(req.body)){
         if (check_privilige(req.body)){
-          res.send(res.send(fs.readFileSync("html/logout-privileged.html").toString()))
+          res.redirect("logout-privileged.html")
         }
-        res.send(res.send(fs.readFileSync("html/logout.html").toString()))
+        res.redirect("logout.html")
       }
       else {
-        res.send(fs.readFileSync("html/index-login-email.html").toString())
+        res.redirect("index-login-email.html")
       }
     }
 
