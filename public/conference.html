@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="utf-8">
+	<title>Chat</title>
+	<link rel="stylesheet" href="/css/styleChat.css">
+	<script type="text/javascript" src="/javascripts/jquery-3.4.1.min.js"></script>
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="/javascripts/chat.js"></script>
+</head>
+
+<body>
+	<header id="banner">  
+		<h1>Conference</h1>
+	</header>
+
+	<section id="chatroom">
+		<div id="messages">
+			<div class="serverMessage"></div>
+		</div>
+		<input id="message" type="text" placeholder="Ingresar mensaje aqui">
+		<input id="send" type="button" value="Enviar">
+	</section>
+
+	<section id="streaming">
+		<div id="video"></div>
+		</section>
+
+	<footer>Espero que disfrutes estar aquì </footer>
+</body>
+
+</html>

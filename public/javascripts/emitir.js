@@ -1,3 +1,4 @@
+//Lado cliente que emite streaming:
 
 $(function(){  //cuando document (el html) estè listo... (acà usamos jquery)
 

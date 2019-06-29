@@ -155,12 +155,45 @@ server.listen(port, hostname, () => {
     console.log(`Stream server running at http://${hostname}:${port}/`);
 });
 
+//Ruta para el chat:
+aplicacion.get('/conference',function(req,res) {
+  res.redirect('conference.html'); 
+  //hacemos una REDIRECCIÒN a conference.html porque estamos usando ARCHIVOS ESTÀTICOS.
+});   
+
+//Ruta para el emisor video:
+aplicacion.get('/emitir',function(req,res) {
+  res.redirect('emitir.html'); 
+});   
+
+//Ruta para el que visualiza el video:
+aplicacion.get('/visualizar',function(req,res) {
+  res.redirect('visualizar.html'); 
+});   
 
 //Cuando el server escuche una conexiòn serà un socket cliente:
 io.on('connection',function(socket){
-		//Luego cuando haya una peticiòn de stream en ese socket... nos mandarà una imagen:
-		//Vamos a trabajar el stream como imagen. Vamos a enviar una cantidad definida de imàgenes por segundo.
-		socket.on('stream',function(image){
+
+    //Para el streaming de video:
+		socket.on('stream',function(image){ //Cuando haya una peticiòn de stream en ese socket... nos mandarà una imagen.
+      //Vamos a trabajar el stream como imagen. Vamos a enviar una cantidad definida de imàgenes por segundo.
       socket.broadcast.emit('stream',image)//Y luego va a transmitirlo a los demàs sockets conectados y emitirà una imagen (image)
     })
+
+    //Para el chat:
+    socket.send(JSON.stringify(
+      {type:'serverMessage',
+      message: 'Bienvenido al chat mas impresionante del mundo'}));
+    
+    socket.on('message', function(message){
+      message= JSON.parse(message);     
+      if(message.type == "userMessage"){
+        socket.broadcast.send(JSON.stringify(message));  //enviamos a todos los sockets menos el que envìo el msje.
+        message.type = "myMessage";
+        socket.send(JSON.stringify(message));  //enviamos al socket que enviò el mensaje.
+      }
+
+    });
 })
+
+    
