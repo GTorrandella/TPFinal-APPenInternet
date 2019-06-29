@@ -34,12 +34,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				<h3>Login</h3>
 				
 				<div class="login-form">
-					<form method="post">
-						<input type="text" name="email" placeholder="E-mail" required="">
-						<input type="password" name="password" placeholder="Password" required="">
-						<div class="tp">
-							<input type="submit" value="LOGIN NOW">
-						</div>
+					<form method="post" id="login-form">
+						<input type="text" name="email" placeholder="E-mail" id="lEmail" required="">
+						<div id="wrong-log-in-email" class="error">E-mail o contraseña incorrectos</div>
+						<input type="password" name="password" placeholder="Password" id="lPass" required="">
+						<input type="submit" value="LOGIN NOW">
 					</form>
 				</div>
 				<p><a href="#"> Don't have an account?</a></p>
@@ -50,11 +49,15 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				<h3>Register</h3>
 				
 				<div class="login-form">
-					<form method="post">
-						<input type="text" name="email" placeholder="E-mail" required="">
-						<input type="text" name="name" placeholder="Username" required="">
-						<input type="password" name="password" placeholder="Password" required="">
-						<input type="password" name="confirmation_password" placeholder="Confirm Password" required="">
+					<form method="post" id="registration-form">
+						<input type="text" name="email" placeholder="E-mail" id="rEmail" required="">
+						<div id="wrong-registration-email" class="error">Ingresé un E-mail</div>
+						<input type="text" name="name" placeholder="Username" id="rUser" required="">
+						<div id="wrong-resgistration-user" class="error">Usuario ya regsitrado</div>
+						<input type="password" name="password" placeholder="Password" id="rPass" required="">
+						<div id="wrong-resgistration-password" class="error">La contraseña debe tener 5 caracteres como mínimo</div>
+						<div id="wrong-resgistration-password" class="error">Las contraseñas deben ser iguales</div>
+						<input type="password" name="confirmation_password" placeholder="Confirm Password" id="rCPass" required="">
 						<input type="checkbox" name="streaming_privileges" value="true">¿Desea reatizar streams?
 						<input type="submit" value="REGISTER">
 					</form>
@@ -67,6 +70,55 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 	</div>
 	<div class="copyright">
 		<p> &copy; 2016 Register Login Widget . All rights reserved | Design by <a href="http://w3layouts.com/" target="_blank" >W3layouts</a></p>
-	</div>			
+	</div>
+	<script>
+		$('.error').hide()
+
+		function make_login_query(){
+			var url = "/checkLogin?"
+			url = url + "email=" + $("#lEmail").val() + '&'
+			url = url + "password=" + $("#lPass").val()
+			return url
+		}
+
+		function make_registration_query(){
+			var url = "/checkRegistration?"
+			url = url + "email=" + $("#rEmail").val() + '&'
+			url = url + "name=" + $("#rUser").val() + '&'
+			url = url + "password=" + $("#rPass").val() + '&'
+			url = url + "confirmation_password=" + $("#rCPass").val()
+			return url
+		}
+		
+		$('#login-form').submit(
+			function(event){
+				var xml = new XMLHttpRequest()
+				url = make_login_query()
+				xml.open("POST", url, false)
+				xml.send()
+
+				if (xml.status == 422){
+					$('.error').show()
+					event.preventDefault()
+				}
+				else {return}
+			}
+		)
+
+		$('#registration-form').submit(
+			function(event){
+				var xml = new XMLHttpRequest()
+				url = make_registration_query()
+				xml.open("POST", url, false)
+				xml.send()
+
+				if (xml.status == 422){
+					$('.error').show()
+					event.preventDefault()
+				}
+				else {return}
+			}
+		)
+	</script>			
 </body>
 </html>

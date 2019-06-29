@@ -115,45 +115,18 @@ aplicacion.get('/', function(req, res, next){
 	res.send(text);
 })
 
-aplicacion.post(['/', '/index*'], [
-  // username must be an email
-  check('email')
-      .isEmail(),
-  // password must be at least 5 chars long
-  check('password')
-      .isLength({ min: 5 })
-], async (req, res, next) => {
-    // Finds the validation errors in this request and wraps them in an object with handy functions
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {  
-      if ('email' in errors.mapped()) {res.redirect("index-regis-email.html")}
-      else if ('password' in errors.mapped()) {res.redirect("index-regis-pass-short.html")}
-    }
-    
-    else if (req.body.confirmation_password){
-      if (check_registration_data(req.body)){
-        if (await check_existing_user(req.body)){res.redirect("index-regis-user.html")}
-        else{
-          add_user(req.body)
-          if (req.session.privilege){
-            res.redirect("emitir.html")}
-          }
-          res.redirect("conference.html")
+aplicacion.post(['/', '/index*'], async (req, res, next) => {    
+    if (req.body.confirmation_password){
+      add_user(req.body)
+      if (req.session.privilege){
+        res.redirect("emitir.html")
       }
-      else {res.redirect("index-regis-pass.html")}
+      res.redirect("conference.html")
     }
-    else{
-      if (await check_returning_user(req.body)){
-        if (req.session.privilege){
-          res.redirect("emitir.html")
-        }
-        res.redirect("conference.html")
-      }
-      else {
-        res.redirect("index-login-email.html")
-      }
+    if (req.session.privilege){
+      res.redirect("emitir.html")
     }
-    res.send()
+    res.redirect("conference.html")
 })
 
 aplicacion.get('/logout', (req, res, next) => {
@@ -163,6 +136,71 @@ aplicacion.get('/logout', (req, res, next) => {
 
 aplicacion.get('/userName', (req, res, next) => {
   res.send("<name>" + req.session.user + "</name>")
+})
+
+aplicacion.post('/checkRegistration', [
+  // username must be an email
+  check('email')
+      .isEmail()
+      .custom(async (value,{req, loc, path}) => {
+        try{
+          if (await check_existing_user(req.query)) {
+              // trow error if the user already exist
+              throw new Error("Already existin user");
+          } else {
+              return value;
+          }
+        }
+        catch{
+          // trow error if the user already exist
+          throw new Error("Already existing user");
+        }
+      }),
+  // password must be at least 5 chars long
+  check('password')
+      .isLength({ min: 5 }),
+  check('confirmation_password')
+      .custom((value,{req, loc, path}) => {
+        if (value !== req.query.password) {
+            // trow error if passwords do not match
+            throw new Error("Passwords don't match");
+        } else {
+            return value;
+        }
+      })
+], async (req, res, next) => {
+    // Finds the validation errors in this request and wraps them in an object with handy functions
+    var errors = validationResult(req);
+    if (!errors.isEmpty()) { 
+      res.status(422)
+      res.send(errors)
+    }
+    res.send(status=200)
+})
+
+aplicacion.post('/checkLogin', [
+  // username must be an email
+  check('email')
+      .custom(async (value,{req, loc, path}) => {
+        try{
+          if (!await check_returning_user(req.query)) {
+              throw new Error("Wrong user or password");
+          } else {
+              return value;
+          }
+        }
+        catch{
+          throw new Error("Wrong user or password");
+        }
+      })
+], async (req, res, next) => {
+    // Finds the validation errors in this request and wraps them in an object with handy functions
+    var errors = validationResult(req);
+    if (!errors.isEmpty()) { 
+      res.status(422)
+      res.send(errors)
+    }
+    res.sendStatus(200)
 })
 
 // Pone a escuchar al servidor y avisa por consola cuando esta listo
