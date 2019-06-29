@@ -41,13 +41,29 @@ aplicacion.use(session({
 
 aplicacion.use(async function(req, res, next) {
   if (!req.session.user) {
-    req.session.user = {}
+    req.session.user = null
+    req.session.privilege = null
   }
-  if (await check_privilige(req.body)){
+
+  if (req.body.email){
+    req.session.user = await get_user_name(req.body.email)
+  }
+
+  if (req.session.privilege == null && await check_privilige(req.body)){
     req.session.privilege = true
   }
+  else {req.session.privilege = false }
   next()
 })
+
+async function get_user_name(email){
+  try {
+    return redisDB.get("user:"+email)
+  }
+  catch{
+    return "ANON"
+  }
+}
 
 function add_user(user_data){
   redisDB.set("user:"+user_data.email, user_data.name)
@@ -59,7 +75,9 @@ function add_user(user_data){
 
 async function check_privilige(user_data){
   try {
-    return await redisDB.sismember("privileges", user_data.email)
+    res = await redisDB.sismember("privileges", user_data.email)
+    if (res == 0){return false}
+    else {return true}
   }
   catch {
     return false
@@ -97,7 +115,7 @@ aplicacion.get('/', function(req, res, next){
 	res.send(text);
 })
 
-aplicacion.post(['/', '/index.*'], [
+aplicacion.post(['/', '/index*'], [
   // username must be an email
   check('email')
       .isEmail(),
@@ -126,7 +144,7 @@ aplicacion.post(['/', '/index.*'], [
     }
     else{
       if (await check_returning_user(req.body)){
-        if (check_privilige(req.body)){
+        if (req.session.privilege){
           res.redirect("emitir.html")
         }
         res.redirect("conference.html")
@@ -140,7 +158,13 @@ aplicacion.post(['/', '/index.*'], [
 
 aplicacion.get('/logout', (req, res, next) => {
   req.session.destroy()
-  res.send(status=200)
+  res.send()
+})
+
+aplicacion.get('/userName', (req, res, next) => {
+  console.log("User Name")
+  console.log(req.session.user)
+  res.send("<name>" + req.session.user + "</name>")
 })
 
 // Pone a escuchar al servidor y avisa por consola cuando esta listo

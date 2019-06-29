@@ -18,7 +18,7 @@ $(function(){  //cuando document (el html) estè listo...
 	$('#send').click(function(){  //cuando clickeemos en el boton con id send...
 		//Creamos un objeto data seteando en message el contenido de la caja de mensajes y en type el tipo de msje.
 		var data = {
-			message: $('#message').val(),
+			message: $('#message').attr('name') +": " + $('#message').val(),
 			type:'userMessage'
 		};
 		socket.send(JSON.stringify(data));   //Enviamos el objeto data anteriormente creado del Cliente al Servidor.

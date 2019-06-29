@@ -48,6 +48,15 @@
 					xml.send()
 					window.location.replace("index.html")
 				})
+				
+				var xhtml = new XMLHttpRequest()
+				xhtml.onreadystatechange = function(){
+					if (this.readyState == 4 && this.status == 200){
+						$("#message").attr("name", this.responseText)	
+					}
+				}
+				xhtml.open("GET", "/userName", true)
+				xhtml.send()
 			</script>
 		</div>			
 	</body>
