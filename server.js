@@ -141,12 +141,12 @@ aplicacion.get('/userName', (req, res, next) => {
 aplicacion.post('/checkRegistration', [
   // username must be an email
   check('email')
-      .isEmail()
+      .isEmail().withMessage("Must be an Email")
       .custom(async (value,{req, loc, path}) => {
         try{
           if (await check_existing_user(req.query)) {
               // trow error if the user already exist
-              throw new Error("Already existin user");
+              throw new Error("Already existing user");
           } else {
               return value;
           }
@@ -155,7 +155,7 @@ aplicacion.post('/checkRegistration', [
           // trow error if the user already exist
           throw new Error("Already existing user");
         }
-      }),
+      }).withMessage("Already existing user"),
   // password must be at least 5 chars long
   check('password')
       .isLength({ min: 5 }),
@@ -170,12 +170,12 @@ aplicacion.post('/checkRegistration', [
       })
 ], async (req, res, next) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions
-    var errors = validationResult(req);
+    var errors = validationResult(req)
     if (!errors.isEmpty()) { 
       res.status(422)
       res.send(errors)
     }
-    res.send(status=200)
+    res.sendStatus(200)
 })
 
 aplicacion.post('/checkLogin', [
