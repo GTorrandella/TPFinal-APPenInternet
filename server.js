@@ -184,7 +184,7 @@ io.on('connection',function(socket){
     socket.send(JSON.stringify(
       {type:'serverMessage',
       message: 'Bienvenido al chat mas impresionante del mundo'}));
-    
+
     socket.on('message', function(message){
       message= JSON.parse(message);     
       if(message.type == "userMessage"){
