@@ -38,24 +38,8 @@
 
 		<div class="copyright">
 			<button type="button" id="logout">LOGOUT</button>
-			<script>
-				$("#logout").click(function (){
-					var xml = new XMLHttpRequest();
-					xml.open("get", "http://localhost:8080/logout", true)
-					xml.send()
-					window.location.replace("index.html")
-				})
-				
-				var xhtml = new XMLHttpRequest()
-				xhtml.onreadystatechange = function(){
-					if (this.readyState == 4 && this.status == 200){
-						$("#message").attr("name", this.responseText)	
-					}
-				}
-				xhtml.open("GET", "/userName", true)
-				xhtml.send()
-				</script>
-		</div>			
+		</div>
+		<script type='text/javascript', src='/javascripts/logout.js'></script>				
 	</body>
 
 </html>

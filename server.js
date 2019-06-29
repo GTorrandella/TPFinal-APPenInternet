@@ -162,8 +162,6 @@ aplicacion.get('/logout', (req, res, next) => {
 })
 
 aplicacion.get('/userName', (req, res, next) => {
-  console.log("User Name")
-  console.log(req.session.user)
   res.send("<name>" + req.session.user + "</name>")
 })
 

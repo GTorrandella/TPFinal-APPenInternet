@@ -29,3 +29,12 @@ $(function(){  //cuando document (el html) estè listo...
 		$('#message').val(''); //jquery. val me asigna el valor.
 	});
 });
+
+var xhtml = new XMLHttpRequest()
+xhtml.onreadystatechange = function(){
+    if (this.readyState == 4 && this.status == 200){
+        $("#message").attr("name", this.responseText)	
+    }
+}
+xhtml.open("GET", "/userName", true)
+xhtml.send()
