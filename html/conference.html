@@ -4,30 +4,49 @@
 <head>
 	<meta charset="utf-8">
 	<title>Chat</title>
-	<link rel="stylesheet" href="styleChat.css">
+	<link rel="stylesheet" href="index.css">
 	<script type="text/javascript" src="/javascripts/jquery-3.4.1.min.js"></script>
 	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
-	<script type="text/javascript" src="/javascripts/chat.js"></script>
+	<script type="text/javascript" src="/javascripts/chat.js"></script> <!-- js para el chat-->
+	<script type='text/javascript', src='/javascripts/visualizar.js'></script> <!-- js para el streaming (visualizacion)-->
 </head>
+	<body class="banner">
+		<h1>Conference Room</h1>
+		<!-- main -->
+		<div class="main2">
 
-<body>
-	<header id="banner">  
-		<h1>Conference</h1>
-	</header>
+			<div class="w32">
+				<h2>-Chat-</h2>
+				<section id="chatroom">
+					<div id="messages">
+						<div class="serverMessage"></div>
+					</div>
+					<input id="message" type="text" placeholder="Ingresar mensaje aqui">
+					<input id="send" type="button" value="Enviar">
+				</section>
+			</div>
 
-	<section id="chatroom">
-		<div id="messages">
-			<div class="serverMessage"></div>
+			<div class="agile2">
+				<h2>-Video conferencia-</h2>
+				<img id="play">
+				<div id="logger"></div>
+			</div>
+
+			<div class="clear"></div>
+
 		</div>
-		<input id="message" type="text" placeholder="Ingresar mensaje aqui">
-		<input id="send" type="button" value="Enviar">
-	</section>
 
-	<section id="streaming">
-		<div id="video"></div>
-		</section>
-
-	<footer>Espero que disfrutes estar aquì </footer>
-</body>
+		<div class="copyright">
+			<button type="button" id="logout">LOGOUT</button>
+			<script>
+				$("#logout").click(function (){
+					var xml = new XMLHttpRequest();
+					xml.open("get", "http://localhost:8080/logout", true)
+					xml.send()
+					window.location.replace("index.html")
+				})
+			</script>
+		</div>			
+	</body>
 
 </html>

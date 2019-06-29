@@ -17,7 +17,6 @@ var server = http.createServer(aplicacion)
 
 // Bindeo el servidor http con Socket.IO
 const io = require('socket.io').listen(server);
-aplicacion.set('view engine', 'ejs');
 
 // Conecto el server a Redis
 const redis = require('ioredis')
@@ -49,7 +48,6 @@ aplicacion.use(async function(req, res, next) {
   }
   next()
 })
-
 
 function add_user(user_data){
   redisDB.set("user:"+user_data.email, user_data.name)
@@ -122,7 +120,7 @@ aplicacion.post(['/', '/index.*'], [
           if (check_privilige(req.body)){
             res.redirect("emitir.html")}
           }
-          res.redirect("visualizar.html")
+          res.redirect("conference.html")
       }
       else {res.redirect("index-regis-pass.html")}
     }
@@ -131,13 +129,12 @@ aplicacion.post(['/', '/index.*'], [
         if (check_privilige(req.body)){
           res.redirect("emitir.html")
         }
-        res.redirect("visualizar.html")
+        res.redirect("conference.html")
       }
       else {
         res.redirect("index-login-email.html")
       }
     }
-
     res.send()
 })
 
@@ -151,25 +148,9 @@ port = 8080
 hostname = "localhost"
 server.listen(port, hostname, () => {
     console.log(`Stream server running at http://${hostname}:${port}/`);
-});
+}); 
 
-//Ruta para el chat:
-aplicacion.get('/conference',function(req,res) {
-  res.redirect('conference.html'); 
-  //hacemos una REDIRECCIÒN a conference.html porque estamos usando ARCHIVOS ESTÀTICOS.
-});   
-
-//Ruta para el emisor video:
-aplicacion.get('/emitir',function(req,res) {
-  res.redirect('emitir.html'); 
-});   
-
-//Ruta para el que visualiza el video:
-aplicacion.get('/visualizar',function(req,res) {
-  res.redirect('visualizar.html'); 
-});   
-
-//Cuando el server escuche una conexiòn serà un socket cliente:
+//Cuando el server escuche una conexion sero un socket cliente:
 io.on('connection',function(socket){
 
     //Para el streaming de video:
@@ -181,7 +162,7 @@ io.on('connection',function(socket){
     //Para el chat:
     socket.send(JSON.stringify(
       {type:'serverMessage',
-      message: 'Bienvenido al chat mas impresionante del mundo'}));
+      message: 'Welcome to the Conference Room'}));
 
     socket.on('message', function(message){
       message= JSON.parse(message);     

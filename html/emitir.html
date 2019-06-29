@@ -1,32 +1,65 @@
 <!DOCTYPE html>
 <html lang="es">
 
-	<head>
-		<script type='text/javascript', src='/javascripts/jquery-3.4.1.min.js'> </script>
-		<script type='text/javascript', src='/socket.io/socket.io.js'> </script>
-		<script type='text/javascript', src='/javascripts/emitir.js'></script>
-		<meta charset="utf-8">
-		<title>Emitir video</title>
-	</head>
+<head>
+	<meta charset="utf-8">
+	<title>Chat</title>
+	<link rel="stylesheet" href="index.css">
+	<script type="text/javascript" src="/javascripts/jquery-3.4.1.min.js"></script>
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="/javascripts/chat.js"></script> <!-- js para el chat-->
+	<script type='text/javascript', src='/javascripts/emitir.js'></script> <!-- js para el streaming (emision)-->
+</head>
+	<body class="banner">
+		<h1>Conference Room - Ponente</h1>
+		<!-- main -->
+		<div class="main2">
 
-	<body>
-		<!--Todo lo que esta abajo en video lo va a pasar màs abajo al canvas. Y apartir del canvas vamos a configurar una imagen que es la que vamos a pasarlas al servidor-->
-		<video src="" id="video" style="width:700px; height: 350px;" autoplay="true"></video> <!--Autoplay es para que se inicie el video de inmediato-->
-		
-		<canvas style="display:none" id="preview"></canvas>
-		<!--SI sacamos el display:none entonces vemos el canvas-->
-		
-		<!--Ademàs vamos a tener un logger para ver si nuestra càmara està activa o inactiva:-->
-		<div id="logger"></div>
-		<button type="button" id="logout">LOGOUT</button>
-		<script>
-			$("#logout").click(function (){
-				var xml = new XMLHttpRequest();
-				xml.open("get", "http://localhost:8080/logout", true)
-				xml.send()
-				window.location.replace("index.html")
-			})
-		</script>
+			<div class="w32">
+				<h2>-Chat-</h2>
+				<section id="chatroom">
+					<div id="messages">
+						<div class="serverMessage"></div>
+					</div>
+					<input id="message" type="text" placeholder="Ingresar mensaje aqui">
+					<input id="send" type="button" value="Enviar">
+				</section>
+			</div>
+
+			<div class="agile2">
+					<h2>-Emitiendo Camara Web en Vivo-</h2>
+					<video src="" id="video" style="width:100%; height: 100%;" autoplay="true"></video> <!--Autoplay es para que se inicie el video de inmediato-->
+					<canvas style="display:none" id="preview"></canvas>
+					<!--SI sacamos el display:none entonces vemos el canvas-->
+					<!--Ademàs vamos a tener un logger para ver si nuestra càmara està activa o inactiva:-->
+					<div id="logger"></div>
+			</div>
+
+			<div class="clear"></div>
+
+		</div>
+
+		<div class="copyright">
+			<button type="button" id="logout">LOGOUT</button>
+			<script>
+				$("#logout").click(function (){
+					var xml = new XMLHttpRequest();
+					xml.open("get", "http://localhost:8080/logout", true)
+					xml.send()
+					window.location.replace("index.html")
+				})
+			</script>
+		</div>			
 	</body>
 
 </html>
+
+
+
+
+
+		
+		
+		
+		
+		
