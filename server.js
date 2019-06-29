@@ -41,7 +41,6 @@ aplicacion.use(session({
 }));
 
 aplicacion.use(async function(req, res, next) {
-  console.log("Nueva session")
   if (!req.session.user) {
     req.session.user = {}
   }
@@ -100,7 +99,7 @@ aplicacion.get('/', function(req, res, next){
 	res.send(text);
 })
 
-aplicacion.post('/', [
+aplicacion.post(['/', '/index.*'], [
   // username must be an email
   check('email')
       .isEmail(),
@@ -121,18 +120,18 @@ aplicacion.post('/', [
         else{
           add_user(req.body)
           if (check_privilige(req.body)){
-            res.redirect("/logout-privileged.html")}
+            res.redirect("emitir.html")}
           }
-          res.redirect("logout.html")
+          res.redirect("visualizar.html")
       }
       else {res.redirect("index-regis-pass.html")}
     }
     else{
       if (await check_returning_user(req.body)){
         if (check_privilige(req.body)){
-          res.redirect("logout-privileged.html")
+          res.redirect("emitir.html")
         }
-        res.redirect("logout.html")
+        res.redirect("visualizar.html")
       }
       else {
         res.redirect("index-login-email.html")

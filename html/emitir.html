@@ -18,6 +18,15 @@
 		
 		<!--Ademàs vamos a tener un logger para ver si nuestra càmara està activa o inactiva:-->
 		<div id="logger"></div>
+		<button type="button" id="logout">LOGOUT</button>
+		<script>
+			$("#logout").click(function (){
+				var xml = new XMLHttpRequest();
+				xml.open("get", "http://localhost:8080/logout", true)
+				xml.send()
+				window.location.replace("index.html")
+			})
+		</script>
 	</body>
 
 </html>
