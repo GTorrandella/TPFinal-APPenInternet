@@ -135,7 +135,7 @@ aplicacion.post(['/', '/index*'], [
         if (await check_existing_user(req.body)){res.redirect("index-regis-user.html")}
         else{
           add_user(req.body)
-          if (check_privilige(req.body)){
+          if (req.session.privilege){
             res.redirect("emitir.html")}
           }
           res.redirect("conference.html")
