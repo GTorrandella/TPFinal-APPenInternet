@@ -3,6 +3,5 @@ express-session
 express-validator
 uuid-random
 socket.io
-bcrypt
 ioredis
 connect-redis
