@@ -65,12 +65,15 @@ async function get_user_name(email){
   }
 }
 
-function add_user(user_data){
-  redisDB.set("user:"+user_data.email, user_data.name)
-  redisDB.set("pass:"+user_data.email, user_data.password)
-  if(user_data.streaming_privileges){
-    redisDB.sadd("privileges", user_data.email)
+async function add_user(user_data){
+  try {
+    redisDB.set("user:"+user_data.email, user_data.name)
+    redisDB.set("pass:"+user_data.email, user_data.password)
+    if(user_data.streaming_privileges){
+      redisDB.sadd("privileges", user_data.email)
+    }
   }
+  catch {}
 }
 
 async function check_privilige(user_data){
@@ -117,8 +120,8 @@ aplicacion.get('/', function(req, res, next){
 
 aplicacion.post(['/', '/index*'], async (req, res, next) => {    
     if (req.body.confirmation_password){
-      add_user(req.body)
-      if (req.session.privilege){
+      await add_user(req.body)
+      if (req.body.streaming_privileges){
         res.redirect("emitir.html")
       }
       res.redirect("conference.html")
