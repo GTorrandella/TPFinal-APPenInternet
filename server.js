@@ -41,7 +41,10 @@ aplicacion.use(session({
 
 aplicacion.use(async function(req, res, next) {
   if (!req.session.user) {
-    req.session.user = null
+    try {
+      req.session.user = await get_user_name(req.body.email)
+    }
+    catch {req.session.user = null}
     req.session.privilege = null
   }
 
