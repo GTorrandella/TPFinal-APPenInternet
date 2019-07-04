@@ -1,5 +1,5 @@
 # TPFinal-APPenInternet
-Trabajo Práctico final para la materia Aplicaciones en Internet, de la Univercidad Nacional de Avellaneda
+Trabajo Práctico Final para la materia Aplicaciones en Internet, de la Universidad Nacional de Avellaneda.
 
 ## Instalación de dependencias
 
@@ -44,4 +44,4 @@ Para iniciarlo, en la carpeta raíz del programa correr:
 ```
 $ node server.js
 ```
-En servidor comensará a escuchar en el puerto 8080.
+En servidor comenzará a escuchar en el puerto 8080.
