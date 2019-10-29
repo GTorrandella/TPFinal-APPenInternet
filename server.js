@@ -63,7 +63,7 @@ async function get_user_name(email){
   try {
     return redisDB.get("user:"+email)
   }
-  catch{
+  catch (e) {
     return "ANON"
   }
 }
