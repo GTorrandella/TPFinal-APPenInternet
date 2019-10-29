@@ -44,7 +44,7 @@ aplicacion.use(async function(req, res, next) {
     try {
       req.session.user = await get_user_name(req.body.email)
     }
-    catch {req.session.user = null}
+    catch (e) {req.session.user = null}
     req.session.privilege = null
   }
 
@@ -76,7 +76,7 @@ async function add_user(user_data){
       redisDB.sadd("privileges", user_data.email)
     }
   }
-  catch {}
+  catch (e) {}
 }
 
 async function check_privilige(user_data){
@@ -85,7 +85,7 @@ async function check_privilige(user_data){
     if (res == 0){return false}
     else {return true}
   }
-  catch {
+  catch (e) {
     return false
   }
 }
@@ -99,7 +99,7 @@ async function check_existing_user(user_data){
     if (await redisDB.get("user:"+user_data.email) == null) {return false}
     return true
   }
-  catch{
+  catch (e) {
     return false
   }
 }
@@ -109,7 +109,7 @@ async function check_returning_user(user_data){
     password = await redisDB.get("pass:"+user_data.email)
     return password == user_data.password
   }
-  catch {
+  catch (e) {
     return false
   }
 }
@@ -157,7 +157,7 @@ aplicacion.post('/checkRegistration', [
               return value;
           }
         }
-        catch{
+        catch (e) {
           // trow error if the user already exist
           throw new Error("Already existing user");
         }
@@ -195,7 +195,7 @@ aplicacion.post('/checkLogin', [
               return value;
           }
         }
-        catch{
+        catch (e) {
           throw new Error("Wrong user or password");
         }
       })
